@@ -8,7 +8,8 @@ This repository contains tools that help make building Apple apps easier.
 The `entitlements` package providers a builder for declaring and generating your App.entitlements file for your Xcode project.
 
 Features include:
-- Functional approach 
+- Functional approach
+- Extensible
 - String output
 - Write to file
 
@@ -48,8 +49,9 @@ The `plist` package provides methods for declaring and generating your Info.plis
 
 Features include:
 - Functional approach 
-- Strongly typed, human-readable errors
-- Extensible.
+- Strongly typed
+- Built-in validation with human-readale errors
+- Extensible
 - Output to a string or file
 
 See it in action:

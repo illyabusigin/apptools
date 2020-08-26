@@ -1,0 +1,3 @@
+- [] Make sure builder.go is building all possible properties, omit empty properties.
+- [] Look at exception usage stuff https://developer.apple.com/documentation/security/preventing_insecure_network_connections#3138036
+- [] Launch screen handling https://developer.apple.com/documentation/bundleresources/information_property_list/uilaunchstoryboardname
