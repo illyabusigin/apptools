@@ -8,7 +8,7 @@ import (
 )
 
 
-func TestCanary(t *testing.T) {
+func _TestPlistCanary(t *testing.T) {
 	plist := New(PlatformIOS)
 	plist.SkipValidation()
 	plist.DisplayName("BestApp")

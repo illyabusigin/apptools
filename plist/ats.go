@@ -96,18 +96,3 @@ func (s *AppTransportSecurity) build() map[string]interface{} {
 
 	return data
 }
-
-func _canary() {
-	ats := &AppTransportSecurity{}
-	ats.AllowArbitraryLoads(true)
-	ats.AllowArbitraryLoadForMedia(true)
-	ats.AllowArbitraryLoadForWebContent(true)
-	ats.AllowArbitraryLoadForLocalNetworking(true)
-	ats.ExceptionDomain("google.com", func(d *ATSExceptionDomain) {
-		d.IncludesSubdomains(true)
-		d.AllowsInsecureHTTPLoads(true)
-		d.MinimumTLSVersion("1.2")
-		d.RequiresForwardSecrecy(true)
-		d.RequiresCertificateTransparency(true)
-	})
-}
