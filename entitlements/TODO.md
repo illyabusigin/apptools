@@ -1,2 +1,0 @@
-- [] Enumerate out remainig entitlements
-    - See https://developer.apple.com/documentation/bundleresources/entitlements for a complete list
