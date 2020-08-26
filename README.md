@@ -1,8 +1,8 @@
-# Apple
+# App Tools
 
-This repository contains tools that help make building Apple apps easier. 
+This repository contains tools that help make building apps easier. 
 
-[`entitlements`](https://pkg.go.dev/github.com/illyabusigin/apple/entitlements?tab=doc "API documentation") package
+[`entitlements`](https://pkg.go.dev/github.com/illyabusigin/apptools/entitlements?tab=doc "API documentation") package
 -------------------------------------------------------------------------------------------
 
 The `entitlements` package providers a builder for declaring and generating your App.entitlements file for your Xcode project.
@@ -22,7 +22,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/illyabusigin/apple/entitlements"
+	"github.com/illyabusigin/apptools/entitlements"
 )
 
 func main() {
@@ -42,7 +42,7 @@ func main() {
 **NOTE**: The `entitlements` package is incomplete, missing many entitlement options. More will be added over time. Pull-requets are appreciated.
 
 
-[`plist`](https://pkg.go.dev/github.com/illyabusigin/apple/plist?tab=doc "API documentation") package
+[`plist`](https://pkg.go.dev/github.com/illyabusigin/apptools/plist?tab=doc "API documentation") package
 -------------------------------------------------------------------------------------------
 
 The `plist` package provides methods for declaring and generating your Info.plist for your Xcode project. This package is built on the delightful [howett.net/plist](https://github.com/DHowett/go-plist) package.
@@ -63,7 +63,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/illyabusigin/apple/plist"
+	"github.com/illyabusigin/apptools/plist"
 )
 
 func main() {
