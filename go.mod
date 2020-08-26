@@ -1,4 +1,4 @@
-module github.com/illyabusigin/apple
+module github.com/illyabusigin/apptools
 
 go 1.15 
 
