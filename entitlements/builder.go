@@ -2,6 +2,7 @@ package entitlements
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 
 	"howett.net/plist"
@@ -16,7 +17,7 @@ type Entitlements struct {
 	APS            *APS
 	DataProtection *DataProtection
 
-	data map[string]interface{}
+	data   map[string]interface{}
 	custom map[string]interface{}
 }
 
@@ -39,6 +40,14 @@ func (e *Entitlements) Build() (string, error) {
 
 	e.APS.Apply(e)
 	e.DataProtection.Apply(e)
+
+	for key, val := range e.custom {
+		e.data[key] = val
+	}
+
+	if len(e.data) == 0 {
+		return "", fmt.Errorf("No entitlements found")
+	}
 
 	encoder := plist.NewEncoder(&buf)
 	if err := encoder.Encode(e.data); err != nil {
@@ -65,6 +74,6 @@ func New() *Entitlements {
 	return &Entitlements{
 		APS:            &APS{},
 		DataProtection: &DataProtection{},
-		custom: map[string]interface{}{},
+		custom:         map[string]interface{}{},
 	}
 }

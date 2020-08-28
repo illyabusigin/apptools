@@ -32,16 +32,13 @@ func TestEntitlements_Build(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "Empty entitlements should build",
+			name: "Empty entitlements should return an error",
 			fields: fields{
 				builder: func() *Entitlements {
 					return New()
 				},
 			},
-			want: `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0"><dict></dict></plist>`,
-			wantErr: false,
+			wantErr: true,
 		},
 		{
 			name: "Build with APS entitlements should succeed",
@@ -55,6 +52,20 @@ func TestEntitlements_Build(t *testing.T) {
 			want: `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict><key>aps-environment</key><string>production</string></dict></plist>`,
+			wantErr: false,
+		},
+		{
+			name: "Custom entitlements should build",
+			fields: fields{
+				builder: func() *Entitlements {
+					e := New()
+					e.Set("foo", "bar")
+					return e
+				},
+			},
+			want: `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict><key>foo</key><string>bar</string></dict></plist>`,
 			wantErr: false,
 		},
 	}
@@ -87,4 +98,20 @@ func TestEntitlements_Write(t *testing.T) {
 <plist version="1.0"><dict><key>aps-environment</key><string>production</string></dict></plist>`
 
 	assert.Equal(t, expected, buf.String())
+}
+
+func TestEntitlements_WriteError(t *testing.T) {
+	e := New()
+
+	buf := strings.Builder{}
+
+	err := e.Write(&buf)
+	assert.NotNil(t, err)
+}
+
+func TestEntitlements_Set(t *testing.T) {
+	e := New()
+
+	e.Set("foo", "bar")
+	assert.Equal(t, "bar", e.custom["foo"])
 }
