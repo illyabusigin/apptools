@@ -26,6 +26,7 @@ func (m *SceneManifest) Validate() error {
 	return nil
 }
 
+// Apply will apply the scene manifest to the specified PropertyList.
 func (m *SceneManifest) Apply(p *PropertyList) {
 	p.data["UIApplicationSceneManifest"] = m.build()
 }
@@ -75,6 +76,10 @@ func (m *SceneManifest) MultipleWindows(v bool) {
 	m.multipleWindows = v
 }
 
+// SceneConfiguration describes a UISceneConfiguration which contains
+// information about the objects and storyboard for UKit to use when
+// creating a particular scene.
+// See https://developer.apple.com/documentation/uikit/uisceneconfiguration for more information.
 type SceneConfiguration struct {
 	name              string
 	className         *string

@@ -255,7 +255,7 @@ func (p *PropertyList) Version(v string) *PropertyList {
 	return p
 }
 
-// RequiresIOS specifices a true boolean value indicating whether the app must run in iOS.
+// RequiresIOS specifies a true boolean value indicating whether the app must run in iOS.
 // See https://developer.apple.com/documentation/bundleresources/information_property_list/LSRequiresIPhoneOS for more information.
 func (p *PropertyList) RequiresIOS() *PropertyList {
 	p.requiresIphoneEnv = true

@@ -7,7 +7,6 @@ import (
 	assert "github.com/stretchr/testify/require"
 )
 
-
 func _TestPlistCanary(t *testing.T) {
 	plist := New(PlatformIOS)
 	plist.SkipValidation()
@@ -42,7 +41,6 @@ func _TestPlistCanary(t *testing.T) {
 	_, err := plist.Build()
 	assert.Nil(t, err)
 }
-
 
 func TestPropertyList_Validate(t *testing.T) {
 	type fields struct {

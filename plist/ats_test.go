@@ -20,6 +20,6 @@ func _TestATSCanary(t *testing.T) {
 		d.RequiresCertificateTransparency(true)
 	})
 
-	data :=	ats.build()
+	data := ats.build()
 	assert.NotNil(t, data)
 }
