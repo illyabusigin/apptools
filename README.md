@@ -1,5 +1,7 @@
 # App Tools
 
+![Go Report Card](https://goreportcard.com/badge/github.com/illyabusigin/apptools) [![PkgGoDev](https://pkg.go.dev/badge/github.com/illyabusigin/apptools)](https://pkg.go.dev/github.com/illyabusigin/apptools)
+
 This repository contains tools that help make building apps easier. 
 
 [`entitlements`](https://pkg.go.dev/github.com/illyabusigin/apptools/entitlements?tab=doc "API documentation") package
