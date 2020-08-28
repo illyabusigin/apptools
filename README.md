@@ -41,7 +41,7 @@ func main() {
 }
 ```
 
-**NOTE**: The `entitlements` package is incomplete, missing many entitlement options. More will be added over time. Pull-requets are appreciated.
+**NOTE**: The `entitlements` package is incomplete, missing many entitlement options. More will be added over time. Pull-requests are appreciated.
 
 
 [`plist`](https://pkg.go.dev/github.com/illyabusigin/apptools/plist?tab=doc "API documentation") package
