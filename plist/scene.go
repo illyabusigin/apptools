@@ -26,6 +26,10 @@ func (m *SceneManifest) Validate() error {
 	return nil
 }
 
+func (m *SceneManifest) Apply(p *PropertyList) {
+	p.data["UIApplicationSceneManifest"] = m.build()
+}
+
 func (m *SceneManifest) build() map[string]interface{} {
 	data := map[string]interface{}{
 		"UIApplicationSupportsMultipleScenes": m.multipleWindows,

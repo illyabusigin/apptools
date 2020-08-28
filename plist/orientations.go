@@ -1,17 +1,22 @@
 package plist
 
-// Orientations contains device orientation related data
+// Orientations contains device orientation related data.
 type Orientations struct {
 	orientations []string
 }
 
-// Validate will verify that you have specified valid device orientations
+// Validate will verify that you have specified valid device orientations.
 func (d *Orientations) Validate() error {
 	if len(d.orientations) == 0 {
 		return errMissingProperty("Device orientations are not defined")
 	}
 
 	return nil
+}
+
+// Apply will apply the interface orientations to the Propertylist.
+func (d *Orientations) Apply(p *PropertyList, modifier string) {
+	p.data["UISupportedInterfaceOrientations"+modifier] = d.orientations
 }
 
 // Portrait specifies the portrait device orientation.

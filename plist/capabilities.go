@@ -34,7 +34,125 @@ type DeviceCapabilities struct {
 
 // Apply will apply the device capabilities to the specified property list
 func (c *DeviceCapabilities) Apply(p *PropertyList) {
+	data := c.build()
 
+	if len(data) > 0 {
+		p.data["UIRequiredDeviceCapabilities"] = data
+	}
+}
+
+func (c *DeviceCapabilities) build() []string {
+	data := []string{}
+
+	if c.accelerometer {
+		data = append(data, "accelerometer")
+	}
+
+	if c.arKit {
+		data = append(data, "arkit")
+	}
+
+	if c.armv7 {
+		data = append(data, "armv7")
+	}
+
+	if c.arm64 {
+		data = append(data, "arm64")
+	}
+
+	if c.autoFocusCamera {
+		data = append(data, "auto-focus-camera")
+	}
+
+	if c.bluetoothLE {
+		data = append(data, "bluetooth-le")
+	}
+
+	if c.cameraFlash {
+		data = append(data, "camera-flash")
+	}
+
+	if c.frontFacingCamera {
+		data = append(data, "front-facing-camera")
+	}
+
+	if c.gameKit {
+		data = append(data, "gamekit")
+	}
+
+	if c.gps {
+		data = append(data, "gps")
+	}
+
+	if c.gyroscope {
+		data = append(data, "gyroscope")
+	}
+
+	if c.healthKit {
+		data = append(data, "healthkit")
+	}
+
+	if c.minPerfA12 {
+		data = append(data, "iphone-ipad-minimum-performance-a12")
+	}
+
+	if c.locationServices {
+		data = append(data, "location-services")
+	}
+
+	if c.magnetometer {
+		data = append(data, "magnetometer")
+	}
+
+	if c.metal {
+		data = append(data, "metal")
+	}
+
+	if c.microphone {
+		data = append(data, "microphone")
+	}
+
+	if c.nfc {
+		data = append(data, "nfc")
+	}
+
+	if c.openGLES1 {
+		data = append(data, "opengles-1")
+	}
+
+	if c.openGLES2 {
+		data = append(data, "opengles-2")
+	}
+
+	if c.openGLES3 {
+		data = append(data, "opengles-3")
+	}
+
+	if c.p2pBT {
+		data = append(data, "peer-peer")
+	}
+
+	if c.sms {
+		data = append(data, "sms")
+	}
+
+	if c.stillCamera {
+		data = append(data, "still-camera")
+	}
+
+	if c.telephony {
+		data = append(data, "telephony")
+	}
+
+	if c.videoCamera {
+		data = append(data, "video-camera")
+	}
+
+	if c.wifi {
+		data = append(data, "wifi")
+	}
+
+	return data
 }
 
 // Accelerometer ensure the presence of accelerometers. Available in iOS 3.0
@@ -164,7 +282,7 @@ func (c *DeviceCapabilities) Microphone() *DeviceCapabilities {
 
 // NFC ensures the device has support Near Field Communication (NFC) tag
 // detection and access to messages that contain NFC Data Exchange Format data.
-//  Use the Core NFC framework to detect and read NFC tags. Available in iOS
+// Use the Core NFC framework to detect and read NFC tags. Available in iOS
 // 11.0 and later.
 func (c *DeviceCapabilities) NFC() *DeviceCapabilities {
 	c.nfc = true

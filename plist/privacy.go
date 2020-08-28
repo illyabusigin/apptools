@@ -30,7 +30,7 @@ func (p *Privacy) Set(key string, value interface{}) {
 // Apply will apply the privacy configuration to the provider property list.
 func (p *Privacy) Apply(pl *PropertyList) {
 	for key, value := range p.values {
-		pl.Set(key, value)
+		pl.data[key] = value
 	}
 }
 

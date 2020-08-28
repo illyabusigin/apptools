@@ -58,6 +58,8 @@ type PropertyList struct {
 
 	custom map[string]interface{}
 	once   sync.Once
+
+	data map[string]interface{}
 }
 
 func (p *PropertyList) init() {
@@ -379,7 +381,7 @@ func (p *PropertyList) Build() (string, error) {
 
 	buf := bytes.Buffer{}
 
-	data := map[string]interface{}{
+	p.data = map[string]interface{}{
 		keyCFBundleIdentifier:            p.bundleIdentifier,
 		keyCFBundleDisplayName:           p.displayName,
 		keyCFBundleDevelopmentRegion:     p.developmentRegion,
@@ -394,18 +396,41 @@ func (p *PropertyList) Build() (string, error) {
 		keyUIStatusBarStyle:              p.statusBarStyle,
 	}
 
+	if ats := p.ats; ats != nil {
+		ats.Apply(p)
+	}
+
+	if orientations := p.orientation; orientations != nil {
+		orientations.Apply(p, "")
+	}
+
+	if tabletOrientations := p.tabletOrientations; tabletOrientations != nil {
+		tabletOrientations.Apply(p, "~ipad")
+	}
+
+	if privacy := p.privacy; privacy != nil {
+		privacy.Apply(p)
+	}
+
+	if privacy := p.privacy; privacy != nil {
+		privacy.Apply(p)
+	}
+
+	if capabilities := p.capabilities; capabilities != nil {
+		capabilities.Apply(p)
+	}
+
 	if scene := p.scene; scene != nil {
-		sceneManifest := scene.build()
-		data["UIApplicationSceneManifest"] = sceneManifest
+		scene.Apply(p)
 	}
 
 	// Custom keys are always applied last, overriding any builder keys
-	for key, value := range p.custom{
-		data[key] = value
+	for key, value := range p.custom {
+		p.data[key] = value
 	}
 
 	encoder := plist.NewEncoder(&buf)
-	if err := encoder.Encode(data); err != nil {
+	if err := encoder.Encode(p.data); err != nil {
 		return "", err
 	}
 
