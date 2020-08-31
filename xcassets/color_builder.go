@@ -1,6 +1,9 @@
 package xcassets
 
-import "io"
+import (
+	"encoding/json"
+	"io"
+)
 
 func _colorBuilder() {
 	Color("SplashScreenColor", func(b *ColorBuilder) {
@@ -38,24 +41,51 @@ func Color(name string, f func(b *ColorBuilder)) *ColorBuilder {
 	return &b
 }
 
+// ColorBuilder contains methods and properties for manipulating color properties.
 type ColorBuilder struct {
 	d    *ColorDefinition
 	name string
 }
 
-func (b *ColorBuilder) Name(v string) {
-	b.name = v
-}
-
-func (b *ColorBuilder) Color(f func(d *ColorDefinition)) {
+// Color specifies the color definition.
+func (b *ColorBuilder) Color(f func(d *ColorDefinition)) *ColorBuilder {
 	b.d = &ColorDefinition{}
 	f(b.d)
+
+	return b
 }
 
+// Validate the color set configuration.
+func (b *ColorBuilder) Validate() error {
+	return nil
+}
+
+// Build will construct the Contents.json of the color.
 func (b *ColorBuilder) Build() (string, error) {
-	return "", nil
+	if err := b.Validate(); err != nil {
+		return "", err
+	}
+
+	colorSet := colorSet{
+		Info: info{
+			Author:  "xcode",
+			Version: 1,
+		},
+		Properties: properties{
+			Localizable: true,
+		},
+		Colors: []colorContainer{},
+	}
+
+	data, err := json.Marshal(&colorSet)
+	if err != nil {
+		return "", err
+	}
+
+	return string(data), nil
 }
 
+// Write will write the Contents.json to the specified `io.Writer`.
 func (b *ColorBuilder) Write(w io.Writer) error {
 	data, err := b.Build()
 	if err != nil {
@@ -67,9 +97,42 @@ func (b *ColorBuilder) Write(w io.Writer) error {
 	return err
 }
 
-// d.Hex("#262D44")
-// 			d.White(1) //used for gray colors
-// 			d.RGB(146, 144, 0)
-// 			d.RGBFloat(0.682, 0.682, 0.682)
+type info struct {
+	Author  string `json:"xcode"`
+	Version int    `json:"version"`
+}
 
-// 			d.Alpha(.4)
+type properties struct {
+	Localizable bool `json:"localizable"`
+}
+
+type appearance struct {
+	Appearance string `json:"appearance"`
+	Value      string `json:"value"`
+}
+
+type appearances [][]appearance
+
+type colorContainer struct {
+	Appearances appearances `json:"appearances"`
+	Color       color       `json:"color"`
+	Idiom       string      `json:"idiom"`
+}
+
+type color struct {
+	ColorSpace string          `json:"color-space"`
+	Components colorComponents `json:"components"`
+}
+
+type colorComponents struct {
+	Alpha float64 `json:"alpha"`
+	Red   float64 `json:"red,omitempty"`
+	Green float64 `json:"green,omitempty"`
+	Blue  float64 `json:"blue,omitempty"`
+}
+
+type colorSet struct {
+	Colors     []colorContainer `json:"colors"`
+	Info       info             `json:"info"`
+	Properties properties       `json:"properties"`
+}

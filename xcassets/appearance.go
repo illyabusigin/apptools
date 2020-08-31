@@ -9,13 +9,6 @@ type Appearance struct {
 	highContrast bool
 }
 
-type appearance struct {
-	Appearance string `json:"appearance"`
-	Value      string `json:"value"`
-}
-
-type appearances [][]appearance
-
 func (a *Appearance) build() appearances {
 	app := appearances{
 		[]appearance{},
