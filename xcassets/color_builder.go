@@ -129,6 +129,7 @@ type colorComponents struct {
 	Red   float64 `json:"red,omitempty"`
 	Green float64 `json:"green,omitempty"`
 	Blue  float64 `json:"blue,omitempty"`
+	White float64 `json:"white,omitempty"`
 }
 
 type colorSet struct {
