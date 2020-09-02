@@ -6,6 +6,14 @@ import (
 	assert "github.com/stretchr/testify/require"
 )
 
+func TestDevices_validate(t *testing.T) {
+	d := Devices{}
+	assert.NotNil(t, d.Validate(), "Specifying no devices should return an error")
+
+	d.Universal()
+	assert.Nil(t, d.Validate(), "Validation should pass with one device specified")
+}
+
 func TestDevices_idioms(t *testing.T) {
 	d := Devices{}
 	d.Universal()

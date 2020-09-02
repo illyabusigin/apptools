@@ -1,5 +1,7 @@
 package xcassets
 
+import "errors"
+
 // Devices contains functions for specifying the idioms for an xcasset.
 // See https://developer.apple.com/library/archive/documentation/Xcode/Reference/xcode_ref-Asset_Catalog_Format/ImageSetType.html#//apple_ref/doc/uid/TP40015170-CH25-SW2 for more information.
 type Devices struct {
@@ -10,6 +12,16 @@ type Devices struct {
 	appleWatch   bool
 	appleTV      bool
 	mac          bool
+}
+
+// Validate will validate the devices configuration. At least one specified
+// device is required (i.e. Universal()).
+func (d *Devices) Validate() error {
+	if len(d.idioms()) == 0 {
+		return errors.New("No devices specified")
+	}
+
+	return nil
 }
 
 func (d *Devices) idioms() []string {
