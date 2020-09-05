@@ -7,32 +7,6 @@ import (
 	"strings"
 )
 
-// func _colorBuilder() {
-// 	Color("SplashScreenColor", func(b *ColorBuilder) {
-// 		b.Gamut.Any()
-// 		b.Gamut.SRGBAndDisplayP3()
-// 		b.Color(func(d *ColorDefinition) {
-// 			d.Devices.Universal().IPhone()
-// 			d.ColorSpace.SRGB()
-
-// 			d.Appearance.Any()
-// 			d.Appearance.Light()
-// 			d.Appearance.Dark()
-// 			d.Appearance.HighContrast()
-
-// 			d.Hex("#262D44")
-// 			d.White(1) //used for gray colors
-// 			d.RGB(146, 144, 0)
-// 			d.RGBFloat(0.682, 0.682, 0.682)
-
-// 			d.Alpha(.4)
-
-// 			// d.Color.System.DarkTextColor()
-// 		})
-// 		// Define colors, then assign them  idioms, gammut, appearance, high contrast
-// 	}) //.SaveTo("path/to/folder")
-// }
-
 // Color creates a named color type with the specified name, returning a
 // `ColorBuilder` function  that you can use to customize your color.
 // See https://developer.apple.com/library/archive/documentation/Xcode/Reference/xcode_ref-Asset_Catalog_Format/Named_Color.html#//apple_ref/doc/uid/TP40015170-CH59-SW1 for more information.
