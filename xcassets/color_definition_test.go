@@ -366,18 +366,6 @@ func TestColorDefinition_Validate(t *testing.T) {
 			},
 			wantErr: true,
 		},
-		{
-			name: "Definition with no appearances should return an error",
-			fields: fields{
-				build: func() *ColorDefinition {
-					d := &ColorDefinition{}
-					d.Hex("#262d44")
-					d.Appearance.Any()
-					return d
-				},
-			},
-			wantErr: true,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

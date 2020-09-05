@@ -32,10 +32,6 @@ func (d *ColorDefinition) Validate() error {
 		return fmt.Errorf("No color present - please specify a color")
 	}
 
-	if len(d.Appearance.build()) == 0 {
-		return fmt.Errorf("No Appearance specifies - please specify a color gamut")
-	}
-
 	if err := d.Devices.Validate(); err != nil {
 		return err
 	}
