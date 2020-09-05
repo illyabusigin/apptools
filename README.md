@@ -1,6 +1,6 @@
 # App Tools
 
-<img src="https://github.com/gobuffalo/buffalo/workflows/Tests/badge.svg" alt="Tests Status" /> ![Go Report Card](https://goreportcard.com/badge/github.com/illyabusigin/apptools) [![PkgGoDev](https://pkg.go.dev/badge/github.com/illyabusigin/apptools)](https://pkg.go.dev/github.com/illyabusigin/apptools)
+<img src="https://github.com/illyabusigin/apptools/workflows/Tests/badge.svg" alt="Tests Status" /> [![Go Report Card](https://goreportcard.com/badge/github.com/illyabusigin/apptools)](https://goreportcard.com/report/github.com/illyabusigin/apptools) [![PkgGoDev](https://pkg.go.dev/badge/github.com/illyabusigin/apptools)](https://pkg.go.dev/github.com/illyabusigin/apptools)
 
 This repository contains tools that help make building apps easier. 
 
