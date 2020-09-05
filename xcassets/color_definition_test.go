@@ -445,3 +445,95 @@ func TestColorDefinition_Validate(t *testing.T) {
 		})
 	}
 }
+
+func TestColorDefinition_color(t *testing.T) {
+	type fields struct {
+		build func() *ColorDefinition
+	}
+	type args struct {
+		gamuts []string
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   color
+	}{
+		{
+			name: "Hex color should build",
+			fields: fields{
+				build: func() *ColorDefinition {
+					d := &ColorDefinition{}
+					d.Alpha(1)
+					d.Hex("#262d44")
+					return d
+				},
+			},
+			args: args{
+				gamuts: []string{},
+			},
+			want: color{
+				ColorSpace: "srgb",
+				Components: colorComponents{
+					Red:   "0x26",
+					Green: "0x2d",
+					Blue:  "0x44",
+					Alpha: "1.000",
+				},
+			},
+		},
+		{
+			name: "RGB color should build",
+			fields: fields{
+				build: func() *ColorDefinition {
+					d := &ColorDefinition{}
+					d.Alpha(1)
+					d.RGB(255, 255, 255)
+					return d
+				},
+			},
+			args: args{
+				gamuts: []string{},
+			},
+			want: color{
+				ColorSpace: "srgb",
+				Components: colorComponents{
+					Red:   "255",
+					Green: "255",
+					Blue:  "255",
+					Alpha: "1.000",
+				},
+			},
+		},
+		{
+			name: "Grayscale color should build",
+			fields: fields{
+				build: func() *ColorDefinition {
+					d := &ColorDefinition{}
+					d.Alpha(1)
+					d.ColorSpace.ExtendedRangeGray()
+					d.White(0.5)
+					return d
+				},
+			},
+			args: args{
+				gamuts: []string{},
+			},
+			want: color{
+				ColorSpace: "extended-gray",
+				Components: colorComponents{
+					White: "0.500",
+					Alpha: "1.000",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			d := tt.fields.build()
+
+			got := d.color(tt.args.gamuts)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
