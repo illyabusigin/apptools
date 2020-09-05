@@ -112,7 +112,7 @@ Features include:
 See it in action:
 
 ```go
-package xcassets
+package main
 
 import (
 	"fmt"
