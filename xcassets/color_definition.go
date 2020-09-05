@@ -2,6 +2,7 @@ package xcassets
 
 import (
 	"fmt"
+	"strings"
 
 	"gopkg.in/go-playground/colors.v1"
 )
@@ -11,7 +12,6 @@ import (
 type ColorDefinition struct {
 	// Use the functions on ColorSpace to define the colorspace.
 	ColorSpace ColorSpace
-	Gamut      Gamut
 	Appearance Appearance
 	Devices    Devices
 
@@ -23,6 +23,56 @@ type ColorDefinition struct {
 
 	alpha float64
 	white float64
+}
+
+// Validate will ensure that you have a valid `ColorDefinition`, returning
+// any errors.
+func (d *ColorDefinition) Validate() error {
+	if !d.colorPresent() {
+		return fmt.Errorf("No color present - please specify a color")
+	}
+
+	if len(d.Appearance.build()) == 0 {
+		return fmt.Errorf("No Appearance specifies - please specify a color gamut")
+	}
+
+	if err := d.Devices.Validate(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *ColorDefinition) detectOverlap(d2 *ColorDefinition) error {
+	if d == d2 {
+		return nil
+	}
+
+	if intersection := d.Devices.intersects(&d2.Devices); len(intersection) > 0 {
+		return fmt.Errorf("Devices between color definitions overlap (%v) - they must be unique", strings.Join(intersection, ","))
+	}
+
+	if intersection := d.Appearance.intersects(&d2.Appearance); len(intersection) > 0 {
+		return fmt.Errorf("Appearances overlap (%v) - they must be unique", strings.Join(intersection, ","))
+	}
+
+	return nil
+}
+
+func (d *ColorDefinition) colorPresent() bool {
+	if d.hex != "" {
+		return true
+	}
+
+	if d.eighBit || d.floatingPoint {
+		return true
+	}
+
+	if d.ColorSpace.grayscale {
+		return true
+	}
+
+	return false
 }
 
 // Hex specifies a color in hexadecimal format (i.e. #262d44).
@@ -47,7 +97,7 @@ func (d *ColorDefinition) Alpha(a float64) error {
 }
 
 // White defines the white level of your color. Should only be used in
-// conjunction with gray-scale color spaces.
+// conjunction with gray-scale color spaces. Value must be between 0 and 1.
 func (d *ColorDefinition) White(v float64) error {
 	if !d.ColorSpace.grayscale {
 		return fmt.Errorf("White is not currently available - Can only be used in conjunction with grayscale color spaces")
