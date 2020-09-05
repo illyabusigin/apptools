@@ -6,6 +6,14 @@ type Gamut struct {
 	values []string
 }
 
+func (g *Gamut) build() []string {
+	if len(g.values) == 0 {
+		g.Any()
+	}
+
+	return g.values
+}
+
 // Any specifes the xcasset uses the standard RGB gamut color space.
 func (g *Gamut) Any() {
 	g.values = []string{}

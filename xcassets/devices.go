@@ -17,14 +17,14 @@ type Devices struct {
 // Validate will validate the devices configuration. At least one specified
 // device is required (i.e. Universal()).
 func (d *Devices) Validate() error {
-	if len(d.idioms()) == 0 {
+	if len(d.build()) == 0 {
 		return errors.New("No devices specified")
 	}
 
 	return nil
 }
 
-func (d *Devices) idioms() []string {
+func (d *Devices) build() []string {
 	idioms := []string{}
 
 	if d.universal {
@@ -58,6 +58,26 @@ func (d *Devices) idioms() []string {
 	return idioms
 }
 
+func (d *Devices) intersects(d2 *Devices) []string {
+	devicesMap := map[string]bool{}
+
+	devices1 := d.build()
+	for _, d := range devices1 {
+		devicesMap[d] = true
+	}
+
+	devices2 := d2.build()
+	overlapping := []string{}
+
+	for _, d := range devices2 {
+		if _, found := devicesMap[d]; found {
+			overlapping = append(overlapping, d)
+		}
+	}
+
+	return overlapping
+}
+
 func (d *Devices) subtypes() []string {
 	subtypes := []string{}
 
@@ -82,7 +102,7 @@ func (d *Devices) IPhone() *Devices {
 
 // IPad specifies that this asset is for iPhone devices.
 func (d *Devices) IPad() *Devices {
-	d.iPhone = true
+	d.iPad = true
 	return d
 }
 

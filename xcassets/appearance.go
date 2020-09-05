@@ -70,6 +70,28 @@ func (a *Appearance) build() appearances {
 	return app
 }
 
+func (a *Appearance) intersects(a2 *Appearance) []string {
+	overlapping := []string{}
+
+	if a.any == a2.any && a.any == true {
+		overlapping = append(overlapping, "Any")
+	}
+
+	if a.light == a2.light && a.light == true {
+		overlapping = append(overlapping, "Light")
+	}
+
+	if a.dark == a2.dark && a.dark == true {
+		overlapping = append(overlapping, "Dark")
+	}
+
+	if a.highContrast == a2.highContrast && a.highContrast == true {
+		overlapping = append(overlapping, "HighContrast")
+	}
+
+	return overlapping
+}
+
 // Any specifies that this asset is available for any appearances.
 func (a *Appearance) Any() {
 	a.any = true

@@ -206,3 +206,88 @@ func TestAppearance_build(t *testing.T) {
 		})
 	}
 }
+
+func TestAppearance_intersects(t *testing.T) {
+	type fields struct {
+		first  func() *Appearance
+		second func() *Appearance
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   []string
+	}{
+		{
+			name: "Any overlapping should intersect",
+			fields: fields{
+				first: func() *Appearance {
+					a := &Appearance{}
+					a.Any()
+					return a
+				},
+				second: func() *Appearance {
+					a := &Appearance{}
+					a.Any()
+					return a
+				},
+			},
+			want: []string{"Any"},
+		},
+		{
+			name: "Light overlapping should intersect",
+			fields: fields{
+				first: func() *Appearance {
+					a := &Appearance{}
+					a.Light()
+					return a
+				},
+				second: func() *Appearance {
+					a := &Appearance{}
+					a.Light()
+					return a
+				},
+			},
+			want: []string{"Light"},
+		},
+		{
+			name: "Dark overlapping should intersect",
+			fields: fields{
+				first: func() *Appearance {
+					a := &Appearance{}
+					a.Dark()
+					return a
+				},
+				second: func() *Appearance {
+					a := &Appearance{}
+					a.Dark()
+					return a
+				},
+			},
+			want: []string{"Any", "Dark"},
+		},
+		{
+			name: "HighContrast overlapping should intersect",
+			fields: fields{
+				first: func() *Appearance {
+					a := &Appearance{}
+					a.HighContrast()
+					return a
+				},
+				second: func() *Appearance {
+					a := &Appearance{}
+					a.HighContrast()
+					return a
+				},
+			},
+			want: []string{"HighContrast"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			a := tt.fields.first()
+			a2 := tt.fields.second()
+			i := a.intersects(a2)
+			assert.Equal(t, tt.want, i)
+		})
+	}
+}
