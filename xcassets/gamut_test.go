@@ -11,7 +11,7 @@ func TestGamut_SRGBAndDisplayP3(t *testing.T) {
 	g.SRGBAndDisplayP3()
 
 	assert.NotEmpty(t, g.values)
-	assert.Equal(t, []string{"display-P3", "sRGB"}, g.values)
+	assert.Equal(t, []string{"sRGB", "display-P3"}, g.values)
 }
 
 func TestGamut_build(t *testing.T) {
@@ -53,7 +53,7 @@ func TestGamut_build(t *testing.T) {
 					return g
 				},
 			},
-			want: []string{"display-P3", "sRGB"},
+			want: []string{"sRGB", "display-P3"},
 		},
 	}
 	for _, tt := range tests {

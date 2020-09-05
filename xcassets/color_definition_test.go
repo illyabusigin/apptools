@@ -366,6 +366,72 @@ func TestColorDefinition_Validate(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "Definition with invalid hex should return an error",
+			fields: fields{
+				build: func() *ColorDefinition {
+					d := &ColorDefinition{}
+					d.Hex("#foo")
+					d.Devices.Universal()
+					d.Appearance.Any()
+					return d
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Definition with invalid RGB color should return an error",
+			fields: fields{
+				build: func() *ColorDefinition {
+					d := &ColorDefinition{}
+					d.RGB(300, 300, 100)
+					d.Devices.Universal()
+					d.Appearance.Any()
+					return d
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Definition with invalid RGB float color should return an error",
+			fields: fields{
+				build: func() *ColorDefinition {
+					d := &ColorDefinition{}
+					d.RGBFloat(300, 300, 100)
+					d.Devices.Universal()
+					d.Appearance.Any()
+					return d
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Definition with invalid alpha should return an error",
+			fields: fields{
+				build: func() *ColorDefinition {
+					d := &ColorDefinition{}
+					d.Hex("#262d44")
+					d.Alpha(100)
+					d.Appearance.Any()
+					return d
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Definition with invalid white should return an error",
+			fields: fields{
+				build: func() *ColorDefinition {
+					d := &ColorDefinition{}
+					d.ColorSpace.GrayGamma22()
+					d.White(100)
+					d.Alpha(0.5)
+					d.Appearance.Any()
+					return d
+				},
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -1,7 +1,7 @@
 package xcassets
 
 type info struct {
-	Author  string `json:"xcode"`
+	Author  string `json:"author"`
 	Version int    `json:"version"`
 }
 
@@ -17,9 +17,10 @@ type appearance struct {
 type appearances [][]appearance
 
 type colorContainer struct {
-	Appearances appearances `json:"appearances"`
-	Color       color       `json:"color"`
-	Idiom       string      `json:"idiom"`
+	Appearances  []appearance `json:"appearances,omitempty"`
+	Color        color        `json:"color"`
+	Idiom        string       `json:"idiom"`
+	DisplayGamut string       `json:"display-gamut,omitempty"`
 }
 
 type color struct {
@@ -28,11 +29,11 @@ type color struct {
 }
 
 type colorComponents struct {
-	Alpha float64 `json:"alpha"`
-	Red   float64 `json:"red,omitempty"`
-	Green float64 `json:"green,omitempty"`
-	Blue  float64 `json:"blue,omitempty"`
-	White float64 `json:"white,omitempty"`
+	Alpha string `json:"alpha"`
+	Red   string `json:"red,omitempty"`
+	Green string `json:"green,omitempty"`
+	Blue  string `json:"blue,omitempty"`
+	White string `json:"white,omitempty"`
 }
 
 type colorSet struct {

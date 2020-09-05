@@ -22,5 +22,5 @@ func (g *Gamut) Any() {
 // SRGBAndDisplayP3 specifes the xcasses uses the standard RGB and wide gamut
 // color space.
 func (g *Gamut) SRGBAndDisplayP3() {
-	g.values = []string{"display-P3", "sRGB"}
+	g.values = []string{"sRGB", "display-P3"}
 }

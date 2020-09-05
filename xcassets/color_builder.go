@@ -4,33 +4,34 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"strings"
 )
 
-func _colorBuilder() {
-	Color("SplashScreenColor", func(b *ColorBuilder) {
-		b.Gamut.Any()
-		b.Gamut.SRGBAndDisplayP3()
-		b.Color(func(d *ColorDefinition) {
-			d.Devices.Universal().IPhone()
-			d.ColorSpace.SRGB()
+// func _colorBuilder() {
+// 	Color("SplashScreenColor", func(b *ColorBuilder) {
+// 		b.Gamut.Any()
+// 		b.Gamut.SRGBAndDisplayP3()
+// 		b.Color(func(d *ColorDefinition) {
+// 			d.Devices.Universal().IPhone()
+// 			d.ColorSpace.SRGB()
 
-			d.Appearance.Any()
-			d.Appearance.Light()
-			d.Appearance.Dark()
-			d.Appearance.HighContrast()
+// 			d.Appearance.Any()
+// 			d.Appearance.Light()
+// 			d.Appearance.Dark()
+// 			d.Appearance.HighContrast()
 
-			d.Hex("#262D44")
-			d.White(1) //used for gray colors
-			d.RGB(146, 144, 0)
-			d.RGBFloat(0.682, 0.682, 0.682)
+// 			d.Hex("#262D44")
+// 			d.White(1) //used for gray colors
+// 			d.RGB(146, 144, 0)
+// 			d.RGBFloat(0.682, 0.682, 0.682)
 
-			d.Alpha(.4)
+// 			d.Alpha(.4)
 
-			// d.Color.System.DarkTextColor()
-		})
-		// Define colors, then assign them  idioms, gammut, appearance, high contrast
-	}) //.SaveTo("path/to/folder")
-}
+// 			// d.Color.System.DarkTextColor()
+// 		})
+// 		// Define colors, then assign them  idioms, gammut, appearance, high contrast
+// 	}) //.SaveTo("path/to/folder")
+// }
 
 // Color creates a named color type with the specified name, returning a
 // `ColorBuilder` function  that you can use to customize your color.
@@ -42,6 +43,8 @@ func Color(name string, f func(b *ColorBuilder)) *ColorBuilder {
 	}
 
 	b.Gamut.Any()
+
+	f(&b)
 
 	return &b
 }
@@ -57,10 +60,12 @@ type ColorBuilder struct {
 // Color specifies the color definition. Certain properties are set by default and can be overridden, specifically:
 //  d.Appearance.Any()
 //	d.ColorSpace.SRGB()
+//  d.Alpha(1)
 func (b *ColorBuilder) Color(f func(d *ColorDefinition)) *ColorBuilder {
 	d := &ColorDefinition{}
 	d.Appearance.Any()
 	d.ColorSpace.SRGB()
+	d.Alpha(1)
 
 	b.defs = append(b.defs, d)
 	f(d)
@@ -107,7 +112,7 @@ func (b *ColorBuilder) Build() (string, error) {
 		Properties: properties{
 			Localizable: true,
 		},
-		Colors: []colorContainer{},
+		Colors: b.buildColors(),
 	}
 
 	data, err := json.Marshal(&colorSet)
@@ -116,6 +121,47 @@ func (b *ColorBuilder) Build() (string, error) {
 	}
 
 	return string(data), nil
+}
+
+func (b *ColorBuilder) buildColors() []colorContainer {
+	colors := []colorContainer{}
+	gamuts := b.Gamut.build()
+
+	// devices(1) * appearance(3) * gamut(2)
+	// if high contrast * 2
+
+	for _, d := range b.defs {
+		devices := d.Devices.build()
+		apps := d.Appearance.build()
+
+		for _, device := range devices {
+			for _, appearance := range apps {
+				c := colorContainer{
+					Appearances: appearance,
+					Color:       d.color(gamuts),
+					Idiom:       device,
+				}
+
+				if len(gamuts) > 0 {
+					c.DisplayGamut = gamuts[0]
+					c.Color.ColorSpace = strings.ToLower(gamuts[0])
+				}
+
+				colors = append(colors, c)
+
+				if len(gamuts) > 1 {
+					c2 := c
+					c2.DisplayGamut = gamuts[1]
+					c2.Color.ColorSpace = strings.ToLower(gamuts[1])
+
+					colors = append(colors, c2)
+				}
+			}
+		}
+
+	}
+
+	return colors
 }
 
 // Write will write the Contents.json to the specified `io.Writer`.
