@@ -32,7 +32,7 @@ type AppIconBuilder struct {
 	iPhone   AppIconPhone
 	iPad     AppIconTablet
 	watch    AppIconWatch
-	carPlay  AppIconWatch
+	carPlay  AppIconCarPlay
 	mac      AppIconMac
 	appStore AppIconAppStore
 }
@@ -46,10 +46,28 @@ func (b *AppIconBuilder) Validate() error {
 
 	// Validate each idiom
 	if err := b.iPhone.Validate(b.AppIconSource); err != nil {
-		return fmt.Errorf("Failed to validate iPhone idiom: %w", err)
+		return fmt.Errorf("Failed to validate iphone idiom: %w", err)
 	}
-	// Validate the source works
-	// Validate image dimensions for each idom
+
+	if err := b.iPad.Validate(b.AppIconSource); err != nil {
+		return fmt.Errorf("Failed to validate ipad idiom: %w", err)
+	}
+
+	if err := b.watch.Validate(b.AppIconSource); err != nil {
+		return fmt.Errorf("Failed to validate watch idiom: %w", err)
+	}
+
+	if err := b.mac.Validate(b.AppIconSource); err != nil {
+		return fmt.Errorf("Failed to validate mac idiom: %w", err)
+	}
+
+	if err := b.carPlay.Validate(b.AppIconSource); err != nil {
+		return fmt.Errorf("Failed to validate car idiom: %w", err)
+	}
+
+	if err := b.appStore.Validate(b.AppIconSource); err != nil {
+		return fmt.Errorf("Failed to validate ios-marketing idiom: %w", err)
+	}
 
 	return nil
 }
@@ -68,11 +86,51 @@ func (b *AppIconBuilder) Build() (*AppIconOuput, error) {
 		},
 	}
 
-	// Build struct for json
+	// Build structs for json
 	if b.iPhone.enabled {
 		inputs, err := b.iPhone.Build(b.Name, b.AppIconSource)
 		if err != nil {
-			return nil, fmt.Errorf("Failed to build images for iPhone: %w", err)
+			return nil, fmt.Errorf("Failed to build images for iphone: %w", err)
+		}
+		output.Inputs = append(output.Inputs, inputs...)
+	}
+
+	if b.iPad.enabled {
+		inputs, err := b.iPad.Build(b.Name, b.AppIconSource)
+		if err != nil {
+			return nil, fmt.Errorf("Failed to build images for ipad: %w", err)
+		}
+		output.Inputs = append(output.Inputs, inputs...)
+	}
+
+	if b.watch.enabled {
+		inputs, err := b.watch.Build(b.Name, b.AppIconSource)
+		if err != nil {
+			return nil, fmt.Errorf("Failed to build images for watch: %w", err)
+		}
+		output.Inputs = append(output.Inputs, inputs...)
+	}
+
+	if b.carPlay.enabled {
+		inputs, err := b.carPlay.Build(b.Name, b.AppIconSource)
+		if err != nil {
+			return nil, fmt.Errorf("Failed to build images for car: %w", err)
+		}
+		output.Inputs = append(output.Inputs, inputs...)
+	}
+
+	if b.mac.enabled {
+		inputs, err := b.mac.Build(b.Name, b.AppIconSource)
+		if err != nil {
+			return nil, fmt.Errorf("Failed to build images for mac: %w", err)
+		}
+		output.Inputs = append(output.Inputs, inputs...)
+	}
+
+	if b.appStore.enabled {
+		inputs, err := b.appStore.Build(b.Name, b.AppIconSource)
+		if err != nil {
+			return nil, fmt.Errorf("Failed to build images for ios-marketing: %w", err)
 		}
 		output.Inputs = append(output.Inputs, inputs...)
 	}
@@ -148,27 +206,27 @@ func (b *AppIconBuilder) SaveTo(path string, overwrite bool) error {
 }
 
 // Phone enables phone icons.
-func (b *AppIconBuilder) Phone() *AppIconBuilder {
+func (b *AppIconBuilder) Phone() *AppIconPhone {
 	b.iPhone.enabled = true
-	return b
+	return &b.iPhone
 }
 
 // Tablet enables iPad icons.
-func (b *AppIconBuilder) Tablet() *AppIconBuilder {
+func (b *AppIconBuilder) Tablet() *AppIconTablet {
 	b.iPad.enabled = true
-	return b
+	return &b.iPad
 }
 
 // Mac enables Mac icons.
-func (b *AppIconBuilder) Mac() *AppIconBuilder {
+func (b *AppIconBuilder) Mac() *AppIconMac {
 	b.mac.enabled = true
-	return b
+	return &b.mac
 }
 
 // CarPlay enables CarPlay icons.
-func (b *AppIconBuilder) CarPlay() *AppIconBuilder {
+func (b *AppIconBuilder) CarPlay() *AppIconCarPlay {
 	b.carPlay.enabled = true
-	return b
+	return &b.carPlay
 }
 
 // AppStore enables App Store icons.
@@ -178,120 +236,9 @@ func (b *AppIconBuilder) AppStore() *AppIconBuilder {
 }
 
 // Watch enables Apple Watch icons.
-func (b *AppIconBuilder) Watch() *AppIconBuilder {
+func (b *AppIconBuilder) Watch() *AppIconWatch {
 	b.watch.enabled = true
-	return b
-}
-
-type AppIconPhone struct {
-	Source       AppIconSource
-	Notification AppIconSource
-	Spotlight    AppIconSource
-	Settings     AppIconSource
-	App          AppIconSource
-	enabled      bool
-}
-
-func (b *AppIconPhone) Validate(s AppIconSource) error {
-	if !b.enabled {
-		return nil
-	}
-
-	b.Source.minDimension = 1024
-	if b.Source.Empty() {
-		b.Source.Apply(s)
-	}
-
-	if err := b.Source.Validate(); err != nil {
-		return err
-	}
-
-	if b.Notification.Empty() {
-		b.Notification.Apply(b.Source)
-	}
-
-	if b.Spotlight.Empty() {
-		b.Spotlight.Apply(b.Source)
-	}
-
-	if b.Settings.Empty() {
-		b.Settings.Apply(b.Source)
-	}
-
-	if b.Settings.Empty() {
-		b.Settings.Apply(b.Source)
-	}
-
-	if b.App.Empty() {
-		b.App.Apply(b.Source)
-	}
-
-	return nil
-}
-
-func (b *AppIconPhone) Build(name string, s AppIconSource) ([]AppIconImageInput, error) {
-	if err := b.Validate(s); err != nil {
-		return nil, err
-	}
-
-	builder := IconImageBuilder{}
-
-	images := []AppIconImageInput{
-		// iPhone Notifications iOS 7-14
-		builder.buildInput(name, "iphone", 2, 20, b.Notification),
-		builder.buildInput(name, "iphone", 3, 20, b.Notification),
-
-		// iPhone iOS 7-14
-		builder.buildInput(name, "iphone", 2, 29, b.Settings),
-		builder.buildInput(name, "iphone", 3, 29, b.Settings),
-
-		// iPhone Spotlight iOS 7-14
-		builder.buildInput(name, "iphone", 2, 40, b.Spotlight),
-		builder.buildInput(name, "iphone", 3, 40, b.Spotlight),
-
-		// iPhone App Icon iOS 7-14
-		builder.buildInput(name, "iphone", 2, 60, b.App),
-		builder.buildInput(name, "iphone", 3, 60, b.App),
-
-		// Application Icon
-		builder.buildInput(name, "ios-marketing", 1, 1024, b.App),
-	}
-
-	return images, nil
-}
-
-type AppIconTablet struct {
-	Source       AppIconSource
-	Notification AppIconSource
-	Settings     AppIconSource
-	Spotlight    AppIconSource
-	App          AppIconSource
-	Pro          AppIconSource
-	enabled      bool
-}
-
-type AppIconMac struct {
-	Source  AppIconSource
-	Size16  AppIconSource
-	Size32  AppIconSource
-	Size128 AppIconSource
-	Size256 AppIconSource
-	Size512 AppIconSource
-	enabled bool
-}
-
-type AppIconWatch struct {
-	Source       AppIconSource
-	Notification AppIconSource
-	Settings     AppIconSource
-	HomeScreen   AppIconSource
-	ShortLook    AppIconSource
-	enabled      bool
-}
-
-type AppIconAppStore struct {
-	Source  AppIconSource
-	enabled bool
+	return &b.watch
 }
 
 type AppIconSource struct {
@@ -360,20 +307,4 @@ func (s *AppIconSource) Apply(from AppIconSource) {
 func (s *AppIconSource) MinDimension(d int) {
 	s.minDimension = d
 	s.validated = false
-}
-
-func __icon() {
-	// Generate all icons from a file or URL
-	// Specify icons individually
-	AppIcon("AppIcon", func(b *AppIconBuilder) {
-		b.File("path/to/icon.png")
-		b.URL("https://www.google.com/icon.png")
-
-		b.Tablet().Phone().Mac().CarPlay().Watch()
-
-		// b.IPhone(func(b *AppIconIPhone) {
-		// 	b.Source.URL("https://www.google.com/icon.png")
-		// 	b.Notification.File("path/to/icon.png")
-		// })
-	}).SaveTo("path/to/folder", true)
 }

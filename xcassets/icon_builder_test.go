@@ -10,7 +10,11 @@ import (
 func TestAppIcon(t *testing.T) {
 	builder := AppIcon("AppIcon", func(b *AppIconBuilder) {
 		b.File("./testdata/Icon.png")
-		b.Phone()
+		b.Phone().Configure(func(b *AppIconPhone) {
+			b.Settings.File("./testdata/Icon.png") // override individual icon configurations
+		})
+		b.AppStore()
+
 	})
 
 	assert.NotNil(t, builder)
