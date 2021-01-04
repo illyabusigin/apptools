@@ -1,5 +1,7 @@
 package xcassets
 
+// AppIconPhone contains confifuration and customization options for the
+// iPhone icon.
 type AppIconPhone struct {
 	Source       AssetSource
 	Notification AssetSource
@@ -9,10 +11,12 @@ type AppIconPhone struct {
 	enabled      bool
 }
 
+// Configure allows you to override the default source and configuration.
 func (b *AppIconPhone) Configure(f func(*AppIconPhone)) {
 	f(b)
 }
 
+// Validate will validate the icon with the provided parent asset source.
 func (b *AppIconPhone) Validate(s AssetSource) error {
 	if !b.enabled {
 		return nil
@@ -50,6 +54,9 @@ func (b *AppIconPhone) Validate(s AssetSource) error {
 	return nil
 }
 
+// Build will validate and build the icon using the provided parent asset
+// source. The parent asset source will only be used if no source has been
+// specified for this icon.
 func (b *AppIconPhone) Build(name string, s AssetSource) ([]AppIconImageInput, error) {
 	if err := b.Validate(s); err != nil {
 		return nil, err

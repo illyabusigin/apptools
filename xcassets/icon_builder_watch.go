@@ -1,5 +1,7 @@
 package xcassets
 
+// AppIconWatch contains confifuration and customization options for the
+// Apple Watch icon.
 type AppIconWatch struct {
 	Source       AssetSource
 	Notification AssetSource
@@ -9,10 +11,12 @@ type AppIconWatch struct {
 	enabled      bool
 }
 
+// Configure allows you to override the default source and configuration.
 func (b *AppIconWatch) Configure(f func(*AppIconWatch)) {
 	f(b)
 }
 
+// Validate will validate the icon with the provided parent asset source.
 func (b *AppIconWatch) Validate(s AssetSource) error {
 	if !b.enabled {
 		return nil
@@ -50,6 +54,9 @@ func (b *AppIconWatch) Validate(s AssetSource) error {
 	return nil
 }
 
+// Build will validate and build the icon using the provided parent asset
+// source. The parent asset source will only be used if no source has been
+// specified for this icon.
 func (b *AppIconWatch) Build(name string, s AssetSource) ([]AppIconImageInput, error) {
 	if err := b.Validate(s); err != nil {
 		return nil, err

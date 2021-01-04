@@ -6,6 +6,8 @@ import (
 	"math"
 )
 
+// AssetSource allows you to define a source for your asset. Asset sources can
+// be remote or local.
 type AssetSource struct {
 	url          string
 	file         string
@@ -27,6 +29,8 @@ func (s *AssetSource) hasDimensions() bool {
 	return false
 }
 
+// Validate will validate the asset source. This validation can include network
+// requests if you specified remote assets in your definition.
 func (s *AssetSource) Validate() error {
 	if s.validated {
 		return nil
@@ -80,20 +84,27 @@ func (s *AssetSource) validateImage(image image.Config, fileName string) error {
 	return nil
 }
 
+// URL specifies a URL for the asset. This URL will be verified during the
+// validation phase.
 func (s *AssetSource) URL(url string) {
 	s.url = url
 	s.validated = false
 }
 
+// File specifies a file path for your asset. This file path will be validated
+// during the validation phase.
 func (s *AssetSource) File(path string) {
 	s.file = path
 	s.validated = false
 }
 
+// Empty returns a boolean value indicating whether or not the asset source
+// is empty.
 func (s AssetSource) Empty() bool {
 	return s.url == "" && s.file == ""
 }
 
+// Apply values from the provided asset source to the destination asset source.
 func (s *AssetSource) Apply(from AssetSource) {
 	s.file = from.file
 	s.url = from.url

@@ -1,5 +1,7 @@
 package xcassets
 
+// AppIconCarPlay contains confifuration and customization options for the
+// CarPlay icon.
 type AppIconCarPlay struct {
 	Source AssetSource
 	Icon   AssetSource
@@ -7,10 +9,12 @@ type AppIconCarPlay struct {
 	enabled bool
 }
 
+// Configure allows you to override the default source and configuration.
 func (b *AppIconCarPlay) Configure(f func(*AppIconCarPlay)) {
 	f(b)
 }
 
+// Validate will validate the icon with the provided parent asset source.
 func (b *AppIconCarPlay) Validate(s AssetSource) error {
 	if !b.enabled {
 		return nil
@@ -32,6 +36,9 @@ func (b *AppIconCarPlay) Validate(s AssetSource) error {
 	return nil
 }
 
+// Build will validate and build the icon using the provided parent asset
+// source. The parent asset source will only be used if no source has been
+// specified for this icon.
 func (b *AppIconCarPlay) Build(name string, s AssetSource) ([]AppIconImageInput, error) {
 	if err := b.Validate(s); err != nil {
 		return nil, err

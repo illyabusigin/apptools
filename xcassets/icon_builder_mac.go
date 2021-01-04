@@ -1,5 +1,7 @@
 package xcassets
 
+// AppIconMac contains confifuration and customization options for the
+// Mac icon.
 type AppIconMac struct {
 	Source  AssetSource
 	Size16  AssetSource
@@ -10,10 +12,12 @@ type AppIconMac struct {
 	enabled bool
 }
 
+// Configure allows you to override the default source and configuration.
 func (b *AppIconMac) Configure(f func(*AppIconMac)) {
 	f(b)
 }
 
+// Validate will validate the icon with the provided parent asset source.
 func (b *AppIconMac) Validate(s AssetSource) error {
 	if !b.enabled {
 		return nil
@@ -51,6 +55,9 @@ func (b *AppIconMac) Validate(s AssetSource) error {
 	return nil
 }
 
+// Build will validate and build the icon using the provided parent asset
+// source. The parent asset source will only be used if no source has been
+// specified for this icon.
 func (b *AppIconMac) Build(name string, s AssetSource) ([]AppIconImageInput, error) {
 	if err := b.Validate(s); err != nil {
 		return nil, err
