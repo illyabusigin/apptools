@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 )
 
-// Color creates a named color type with the specified name, returning a
-// `ColorBuilder` function  that you can use to customize your color.
-// See https://developer.apple.com/library/archive/documentation/Xcode/Reference/xcode_ref-Asset_Catalog_Format/Named_Color.html#//apple_ref/doc/uid/TP40015170-CH59-SW1 for more information.
+// Asset creates a named image set with the specified name, returning an
+// `AssetBuilder` that you can use to customize your asset.
+// See https://developer.apple.com/library/archive/documentation/Xcode/Reference/xcode_ref-Asset_Catalog_Format/ImageSetType.html#//apple_ref/doc/uid/TP40015170-CH25-SW1 for more information.
 func Asset(name string, f func(b *AssetBuilder)) *AssetBuilder {
 	b := AssetBuilder{
 		name: name,
@@ -24,7 +24,7 @@ func Asset(name string, f func(b *AssetBuilder)) *AssetBuilder {
 	return &b
 }
 
-// AssetBuilder contains methods and properties for manipulating color properties.
+// AssetBuilder contains methods and properties for manipulating asset properties.
 type AssetBuilder struct {
 	defs []*AssetDefinition
 	name string
@@ -33,7 +33,8 @@ type AssetBuilder struct {
 	Properties AssetProperties
 }
 
-// Asset specifies the color definition. Certain properties are set by default and can be overridden, specifically:
+// Asset specifies the asset definition. Certain properties are set by default
+// and can be overridden, specifically:
 //  d.Appearance.Any()
 func (b *AssetBuilder) Asset(f func(d *AssetDefinition)) *AssetBuilder {
 	d := &AssetDefinition{}
@@ -45,10 +46,10 @@ func (b *AssetBuilder) Asset(f func(d *AssetDefinition)) *AssetBuilder {
 	return b
 }
 
-// Validate the color set configuration.
+// Validate the asset set configuration.
 func (b *AssetBuilder) Validate() error {
 	if len(b.defs) == 0 {
-		return fmt.Errorf("No colors defined for %v", b.name)
+		return fmt.Errorf("No assets defined for %v", b.name)
 	}
 
 	for _, d := range b.defs {
@@ -70,8 +71,9 @@ func (b *AssetBuilder) Validate() error {
 	return nil
 }
 
-// Build will construct the Contents.json of the color.
-func (b *AssetBuilder) build() (*AssetOutput, error) {
+// Build will construct the Contents.json of the asset and validate the
+// configuration.
+func (b *AssetBuilder) Build() (*AssetOutput, error) {
 	if err := b.Validate(); err != nil {
 		return nil, err
 	}
@@ -99,7 +101,7 @@ func (b *AssetBuilder) build() (*AssetOutput, error) {
 	output.inputs = inputs
 	images := make([]AssetImage, len(inputs))
 	for idx, input := range inputs {
-		images[idx] = input.Image()
+		images[idx] = input.image()
 	}
 	output.Images = images
 
@@ -128,15 +130,15 @@ func (b *AssetBuilder) exists(path string) (bool, error) {
 	return false, err
 }
 
-// SaveTo will save the application icon to the specified path.
+// SaveTo will save the asset to the specified path.
 func (b *AssetBuilder) SaveTo(path string, overwrite bool) error {
 	stat, err := os.Stat(path)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return fmt.Errorf("Path does not exist: %w", err)
-		} else {
-			return fmt.Errorf("Failed to validate path: %w", err)
 		}
+
+		return fmt.Errorf("Failed to validate path: %w", err)
 	}
 
 	if !stat.IsDir() {
@@ -155,7 +157,7 @@ func (b *AssetBuilder) SaveTo(path string, overwrite bool) error {
 		return fmt.Errorf("Failed to create imageset folder: %w", err)
 	}
 
-	output, err := b.build()
+	output, err := b.Build()
 	if err != nil {
 		return err
 	}

@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// AssetImage is used to construct the JSON in Contents.json `images`.
 type AssetImage struct {
 	Filename string `json:"filename"`
 	Idiom    string `json:"idiom"`
@@ -31,7 +32,7 @@ type assetInput struct {
 	Source AssetSource
 }
 
-func (i *assetInput) Image() AssetImage {
+func (i *assetInput) image() AssetImage {
 	if delta := math.Floor(i.Scale) - i.Scale; delta != 0 {
 		return AssetImage{
 			Filename:    i.Filename + ".png",

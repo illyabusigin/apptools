@@ -10,6 +10,7 @@ import (
 	"github.com/nfnt/resize"
 )
 
+// AssetOutput represents the `Contents.json` file used in an image set.
 type AssetOutput struct {
 	Images     []AssetImage     `json:"images"`
 	Info       info             `json:"info"`
@@ -18,6 +19,7 @@ type AssetOutput struct {
 	inputs []assetInput
 }
 
+// WriteImages will write the file in `Images` to the specified path.
 func (o *AssetOutput) WriteImages(path string) error {
 
 	loader := assetLoader{}
