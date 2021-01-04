@@ -1,12 +1,12 @@
 package xcassets
 
 type AppIconMac struct {
-	Source  AppIconSource
-	Size16  AppIconSource
-	Size32  AppIconSource
-	Size128 AppIconSource
-	Size256 AppIconSource
-	Size512 AppIconSource
+	Source  AssetSource
+	Size16  AssetSource
+	Size32  AssetSource
+	Size128 AssetSource
+	Size256 AssetSource
+	Size512 AssetSource
 	enabled bool
 }
 
@@ -14,7 +14,7 @@ func (b *AppIconMac) Configure(f func(*AppIconMac)) {
 	f(b)
 }
 
-func (b *AppIconMac) Validate(s AppIconSource) error {
+func (b *AppIconMac) Validate(s AssetSource) error {
 	if !b.enabled {
 		return nil
 	}
@@ -51,7 +51,7 @@ func (b *AppIconMac) Validate(s AppIconSource) error {
 	return nil
 }
 
-func (b *AppIconMac) Build(name string, s AppIconSource) ([]AppIconImageInput, error) {
+func (b *AppIconMac) Build(name string, s AssetSource) ([]AppIconImageInput, error) {
 	if err := b.Validate(s); err != nil {
 		return nil, err
 	}

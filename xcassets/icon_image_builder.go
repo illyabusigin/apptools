@@ -20,7 +20,7 @@ type AppIconOuput struct {
 
 func (o *AppIconOuput) WriteImages(path string) error {
 
-	loader := iconImageLoader{}
+	loader := assetLoader{}
 	cache := map[string]image.Image{}
 
 	for _, input := range o.Inputs {
@@ -60,7 +60,7 @@ type AppIconImageInput struct {
 	Scale    int
 	Role     string
 	Subtype  string
-	Source   AppIconSource
+	Source   AssetSource
 }
 
 func (i *AppIconImageInput) Image() AppIconImage {
@@ -100,7 +100,7 @@ type AppIconVersion struct {
 type IconImageBuilder struct {
 }
 
-func (b *IconImageBuilder) buildInput(name, idiom string, scale int, size float64, source AppIconSource) AppIconImageInput {
+func (b *IconImageBuilder) buildInput(name, idiom string, scale int, size float64, source AssetSource) AppIconImageInput {
 
 	if delta := math.Floor(size) - size; delta != 0 {
 		return AppIconImageInput{
@@ -121,7 +121,7 @@ func (b *IconImageBuilder) buildInput(name, idiom string, scale int, size float6
 	}
 }
 
-func (b *IconImageBuilder) buildExtendedInput(name, idiom, role, subtype string, scale int, size float64, source AppIconSource) AppIconImageInput {
+func (b *IconImageBuilder) buildExtendedInput(name, idiom, role, subtype string, scale int, size float64, source AssetSource) AppIconImageInput {
 
 	if delta := math.Floor(size) - size; delta != 0 {
 		return AppIconImageInput{

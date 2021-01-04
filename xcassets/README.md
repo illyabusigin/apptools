@@ -51,7 +51,39 @@ TBD
 
 ## Assets
 
-TBD
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/illyabusigin/apptools/xcassets"
+)
+
+func main() {
+	logo := xcassets.Asset("Logo", func(b *xcassets.AssetBuilder) {
+		b.Gamut.Any()
+		b.Gamut.SRGBAndDisplayP3()
+		b.Source.File("./path/to/file.png")
+
+		b.Color(func(d *xcassets.AssetDefinition) {
+			d.Devices.Universal()
+			d.ColorSpace.SRGB()
+			d.Appearance.Any()
+
+            d.Source.File("./path/to/file.png")
+		})
+	})
+
+	if err := logo.Validate(); err != nil {
+        log.Fatal("Failed validation", err)
+    }
+
+	err := logo.SaveTo("./_test/", true)
+}
+
+```
 
 ## Colors
 
@@ -66,7 +98,7 @@ import (
 )
 
 func main() {
-	splashScreenColor := Color("SplashScreenColor", func(b *xcassets.ColorBuilder) {
+	splashScreenColor := xcassets.Color("SplashScreenColor", func(b *xcassets.ColorBuilder) {
 		b.Gamut.Any()
 		b.Gamut.SRGBAndDisplayP3()
 		b.Color(func(d *xcassets.ColorDefinition) {

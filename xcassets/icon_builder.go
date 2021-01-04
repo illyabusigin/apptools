@@ -14,7 +14,7 @@ const MinDimension = 1024
 func AppIcon(name string, f func(b *AppIconBuilder)) *AppIconBuilder {
 	b := &AppIconBuilder{
 		Name: name,
-		AppIconSource: AppIconSource{
+		AssetSource: AssetSource{
 			minDimension: MinDimension,
 		},
 	}
@@ -28,7 +28,7 @@ func AppIcon(name string, f func(b *AppIconBuilder)) *AppIconBuilder {
 
 type AppIconBuilder struct {
 	Name string
-	AppIconSource
+	AssetSource
 	iPhone   AppIconPhone
 	iPad     AppIconTablet
 	watch    AppIconWatch
@@ -38,34 +38,34 @@ type AppIconBuilder struct {
 }
 
 func (b *AppIconBuilder) Validate() error {
-	if !b.AppIconSource.Empty() {
-		if err := b.AppIconSource.Validate(); err != nil {
+	if !b.AssetSource.Empty() {
+		if err := b.AssetSource.Validate(); err != nil {
 			return fmt.Errorf("Source is invalid: %w", err)
 		}
 	}
 
 	// Validate each idiom
-	if err := b.iPhone.Validate(b.AppIconSource); err != nil {
+	if err := b.iPhone.Validate(b.AssetSource); err != nil {
 		return fmt.Errorf("Failed to validate iphone idiom: %w", err)
 	}
 
-	if err := b.iPad.Validate(b.AppIconSource); err != nil {
+	if err := b.iPad.Validate(b.AssetSource); err != nil {
 		return fmt.Errorf("Failed to validate ipad idiom: %w", err)
 	}
 
-	if err := b.watch.Validate(b.AppIconSource); err != nil {
+	if err := b.watch.Validate(b.AssetSource); err != nil {
 		return fmt.Errorf("Failed to validate watch idiom: %w", err)
 	}
 
-	if err := b.mac.Validate(b.AppIconSource); err != nil {
+	if err := b.mac.Validate(b.AssetSource); err != nil {
 		return fmt.Errorf("Failed to validate mac idiom: %w", err)
 	}
 
-	if err := b.carPlay.Validate(b.AppIconSource); err != nil {
+	if err := b.carPlay.Validate(b.AssetSource); err != nil {
 		return fmt.Errorf("Failed to validate car idiom: %w", err)
 	}
 
-	if err := b.appStore.Validate(b.AppIconSource); err != nil {
+	if err := b.appStore.Validate(b.AssetSource); err != nil {
 		return fmt.Errorf("Failed to validate ios-marketing idiom: %w", err)
 	}
 
@@ -88,7 +88,7 @@ func (b *AppIconBuilder) Build() (*AppIconOuput, error) {
 
 	// Build structs for json
 	if b.iPhone.enabled {
-		inputs, err := b.iPhone.Build(b.Name, b.AppIconSource)
+		inputs, err := b.iPhone.Build(b.Name, b.AssetSource)
 		if err != nil {
 			return nil, fmt.Errorf("Failed to build images for iphone: %w", err)
 		}
@@ -96,7 +96,7 @@ func (b *AppIconBuilder) Build() (*AppIconOuput, error) {
 	}
 
 	if b.iPad.enabled {
-		inputs, err := b.iPad.Build(b.Name, b.AppIconSource)
+		inputs, err := b.iPad.Build(b.Name, b.AssetSource)
 		if err != nil {
 			return nil, fmt.Errorf("Failed to build images for ipad: %w", err)
 		}
@@ -104,7 +104,7 @@ func (b *AppIconBuilder) Build() (*AppIconOuput, error) {
 	}
 
 	if b.watch.enabled {
-		inputs, err := b.watch.Build(b.Name, b.AppIconSource)
+		inputs, err := b.watch.Build(b.Name, b.AssetSource)
 		if err != nil {
 			return nil, fmt.Errorf("Failed to build images for watch: %w", err)
 		}
@@ -112,7 +112,7 @@ func (b *AppIconBuilder) Build() (*AppIconOuput, error) {
 	}
 
 	if b.carPlay.enabled {
-		inputs, err := b.carPlay.Build(b.Name, b.AppIconSource)
+		inputs, err := b.carPlay.Build(b.Name, b.AssetSource)
 		if err != nil {
 			return nil, fmt.Errorf("Failed to build images for car: %w", err)
 		}
@@ -120,7 +120,7 @@ func (b *AppIconBuilder) Build() (*AppIconOuput, error) {
 	}
 
 	if b.mac.enabled {
-		inputs, err := b.mac.Build(b.Name, b.AppIconSource)
+		inputs, err := b.mac.Build(b.Name, b.AssetSource)
 		if err != nil {
 			return nil, fmt.Errorf("Failed to build images for mac: %w", err)
 		}
@@ -128,7 +128,7 @@ func (b *AppIconBuilder) Build() (*AppIconOuput, error) {
 	}
 
 	if b.appStore.enabled {
-		inputs, err := b.appStore.Build(b.Name, b.AppIconSource)
+		inputs, err := b.appStore.Build(b.Name, b.AssetSource)
 		if err != nil {
 			return nil, fmt.Errorf("Failed to build images for ios-marketing: %w", err)
 		}
@@ -239,72 +239,4 @@ func (b *AppIconBuilder) AppStore() *AppIconBuilder {
 func (b *AppIconBuilder) Watch() *AppIconWatch {
 	b.watch.enabled = true
 	return &b.watch
-}
-
-type AppIconSource struct {
-	url          string
-	file         string
-	validated    bool
-	minDimension int
-	dimension    int
-}
-
-func (s *AppIconSource) Validate() error {
-	if s.validated {
-		return nil
-	}
-
-	if s.Empty() {
-		return fmt.Errorf("No URL or file location specified for icon")
-	}
-
-	if s.minDimension <= 0 {
-		return fmt.Errorf("Minimum icon dimension invalid or not specified (%v)", s.minDimension)
-	}
-
-	loader := iconImageLoader{
-		source: *s,
-	}
-
-	if err := loader.Validate(); err != nil {
-		return err
-	}
-
-	s.validated = true
-
-	return nil
-}
-
-func (s *AppIconSource) validateFile() error {
-	if s.file == "" {
-		return nil
-	}
-
-	return nil
-}
-
-func (s *AppIconSource) URL(url string) {
-	s.url = url
-	s.validated = false
-}
-
-func (s *AppIconSource) File(path string) {
-	s.file = path
-	s.validated = false
-}
-
-func (s AppIconSource) Empty() bool {
-	return s.url == "" && s.file == ""
-}
-
-func (s *AppIconSource) Apply(from AppIconSource) {
-	s.file = from.file
-	s.url = from.url
-	s.validated = from.validated
-}
-
-// MinDimension specifies the minimum dimension for the icon image.
-func (s *AppIconSource) MinDimension(d int) {
-	s.minDimension = d
-	s.validated = false
 }

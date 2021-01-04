@@ -1,7 +1,7 @@
 package xcassets
 
 type AppIconAppStore struct {
-	Source AppIconSource
+	Source AssetSource
 
 	enabled bool
 }
@@ -10,7 +10,7 @@ func (b *AppIconAppStore) Configure(f func(*AppIconAppStore)) {
 	f(b)
 }
 
-func (b *AppIconAppStore) Validate(s AppIconSource) error {
+func (b *AppIconAppStore) Validate(s AssetSource) error {
 	if !b.enabled {
 		return nil
 	}
@@ -27,7 +27,7 @@ func (b *AppIconAppStore) Validate(s AppIconSource) error {
 	return nil
 }
 
-func (b *AppIconAppStore) Build(name string, s AppIconSource) ([]AppIconImageInput, error) {
+func (b *AppIconAppStore) Build(name string, s AssetSource) ([]AppIconImageInput, error) {
 	if err := b.Validate(s); err != nil {
 		return nil, err
 	}

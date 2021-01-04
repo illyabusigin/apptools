@@ -1,11 +1,11 @@
 package xcassets
 
 type AppIconPhone struct {
-	Source       AppIconSource
-	Notification AppIconSource
-	Spotlight    AppIconSource
-	Settings     AppIconSource
-	App          AppIconSource
+	Source       AssetSource
+	Notification AssetSource
+	Spotlight    AssetSource
+	Settings     AssetSource
+	App          AssetSource
 	enabled      bool
 }
 
@@ -13,7 +13,7 @@ func (b *AppIconPhone) Configure(f func(*AppIconPhone)) {
 	f(b)
 }
 
-func (b *AppIconPhone) Validate(s AppIconSource) error {
+func (b *AppIconPhone) Validate(s AssetSource) error {
 	if !b.enabled {
 		return nil
 	}
@@ -50,7 +50,7 @@ func (b *AppIconPhone) Validate(s AppIconSource) error {
 	return nil
 }
 
-func (b *AppIconPhone) Build(name string, s AppIconSource) ([]AppIconImageInput, error) {
+func (b *AppIconPhone) Build(name string, s AssetSource) ([]AppIconImageInput, error) {
 	if err := b.Validate(s); err != nil {
 		return nil, err
 	}

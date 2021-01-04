@@ -1,12 +1,12 @@
 package xcassets
 
 type AppIconTablet struct {
-	Source       AppIconSource
-	Notification AppIconSource
-	Settings     AppIconSource
-	Spotlight    AppIconSource
-	App          AppIconSource
-	Pro          AppIconSource
+	Source       AssetSource
+	Notification AssetSource
+	Settings     AssetSource
+	Spotlight    AssetSource
+	App          AssetSource
+	Pro          AssetSource
 	enabled      bool
 }
 
@@ -14,7 +14,7 @@ func (b *AppIconTablet) Configure(f func(*AppIconTablet)) {
 	f(b)
 }
 
-func (b *AppIconTablet) Validate(s AppIconSource) error {
+func (b *AppIconTablet) Validate(s AssetSource) error {
 	if !b.enabled {
 		return nil
 	}
@@ -55,7 +55,7 @@ func (b *AppIconTablet) Validate(s AppIconSource) error {
 	return nil
 }
 
-func (b *AppIconTablet) Build(name string, s AppIconSource) ([]AppIconImageInput, error) {
+func (b *AppIconTablet) Build(name string, s AssetSource) ([]AppIconImageInput, error) {
 	if err := b.Validate(s); err != nil {
 		return nil, err
 	}

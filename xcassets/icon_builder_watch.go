@@ -1,11 +1,11 @@
 package xcassets
 
 type AppIconWatch struct {
-	Source       AppIconSource
-	Notification AppIconSource
-	Settings     AppIconSource
-	HomeScreen   AppIconSource
-	ShortLook    AppIconSource
+	Source       AssetSource
+	Notification AssetSource
+	Settings     AssetSource
+	HomeScreen   AssetSource
+	ShortLook    AssetSource
 	enabled      bool
 }
 
@@ -13,7 +13,7 @@ func (b *AppIconWatch) Configure(f func(*AppIconWatch)) {
 	f(b)
 }
 
-func (b *AppIconWatch) Validate(s AppIconSource) error {
+func (b *AppIconWatch) Validate(s AssetSource) error {
 	if !b.enabled {
 		return nil
 	}
@@ -50,7 +50,7 @@ func (b *AppIconWatch) Validate(s AppIconSource) error {
 	return nil
 }
 
-func (b *AppIconWatch) Build(name string, s AppIconSource) ([]AppIconImageInput, error) {
+func (b *AppIconWatch) Build(name string, s AssetSource) ([]AppIconImageInput, error) {
 	if err := b.Validate(s); err != nil {
 		return nil, err
 	}

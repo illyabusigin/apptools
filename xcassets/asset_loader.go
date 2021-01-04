@@ -10,17 +10,20 @@ import (
 	"log"
 	"net/http"
 	"path"
+	"path/filepath"
 
 	_ "golang.org/x/image/bmp" // support for BMP images
 
 	"os"
 )
 
-type iconImageLoader struct {
-	source AppIconSource
+type assetLoader struct {
+	source AssetSource
+
+	width, height, maxScaleFactor int
 }
 
-func (l *iconImageLoader) Key(source AppIconSource) string {
+func (l *assetLoader) Key(source AssetSource) string {
 	if path := source.file; path != "" {
 		return path
 	}
@@ -32,7 +35,7 @@ func (l *iconImageLoader) Key(source AppIconSource) string {
 	return ""
 }
 
-func (l *iconImageLoader) Load(source AppIconSource) (image.Image, error) {
+func (l *assetLoader) Load(source AssetSource) (image.Image, error) {
 	if path := source.file; path != "" {
 		img, err := l.loadImageFromFile(path)
 		return img, err
@@ -46,7 +49,7 @@ func (l *iconImageLoader) Load(source AppIconSource) (image.Image, error) {
 	return nil, fmt.Errorf("No image source specified")
 }
 
-func (l *iconImageLoader) Validate() error {
+func (l *assetLoader) Validate() error {
 	if path := l.source.file; path != "" {
 		return l.validateFile(path)
 	}
@@ -58,7 +61,7 @@ func (l *iconImageLoader) Validate() error {
 	return nil
 }
 
-func (l *iconImageLoader) loadImageFromFile(path string) (image.Image, error) {
+func (l *assetLoader) loadImageFromFile(path string) (image.Image, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -76,7 +79,7 @@ func (l *iconImageLoader) loadImageFromFile(path string) (image.Image, error) {
 	return imageData, nil
 }
 
-func (l *iconImageLoader) loadImageFromURL(url string) (image.Image, error) {
+func (l *assetLoader) loadImageFromURL(url string) (image.Image, error) {
 	response, e := http.Get(url)
 	if e != nil {
 		log.Fatal(e)
@@ -102,7 +105,7 @@ func (l *iconImageLoader) loadImageFromURL(url string) (image.Image, error) {
 	return l.loadImageFromFile(path)
 }
 
-func (l *iconImageLoader) validateURL(url string) error {
+func (l *assetLoader) validateURL(url string) error {
 	response, e := http.Get(url)
 	if e != nil {
 		log.Fatal(e)
@@ -132,7 +135,7 @@ func (l *iconImageLoader) validateURL(url string) error {
 	return nil
 }
 
-func (l *iconImageLoader) validateFile(path string) error {
+func (l *assetLoader) validateFile(path string) error {
 	file, err := os.Open(path)
 	if err != nil {
 		return err
@@ -144,10 +147,5 @@ func (l *iconImageLoader) validateFile(path string) error {
 		return err
 	}
 
-	if image.Width < l.source.minDimension || image.Height < l.source.minDimension {
-		return fmt.Errorf("%v dimensions (%vx%v) have dimensions less than the minimum (%v)",
-			file.Name(), image.Width, image.Height, l.source.minDimension)
-	}
-
-	return nil
+	return l.source.validateImage(image, filepath.Base(file.Name()))
 }
